@@ -13,16 +13,24 @@ document.addEventListener('DOMContentLoaded', () => {
 ***/
 const $name = $('#name');
 const $email = $('#mail');
+const $jobRoleFieldset = $('#firstSet');
 const $jobRole = $('#title');
 const $jobRoleOther = $('#other-title');
 const $shirtDesign = $('#design');
 const $shirtColors = $('#color');
 const $activityFieldset = $('.activities');
 const $allCheckboxes = $(':checkbox');
+const $activityMain = $('all:checkbox');
+const $activityFrameworks = $('js-frameworks:checkbox');
+const $activityLibs = $('js-libs:checkbox');
+const $activityExpress = $('express:checkbox');
+const $activityNode = $('node:checkbox');
+const $activityBuild = $('buildtools:checkbox');
+const $activityNPM = $('npm:checkbox');
 const $paymentOptions = $('#payment');
 const $creditCardNum = $('#cc-num');
 const $creditCardZip = $('#zip');
-const $creditCardCVV = $('#cvv');
+const $creditCardCCV = $('#ccv');
 
 let activityTotal = $('<div></div>');
 $activityFieldset.append(activityTotal);
@@ -172,12 +180,12 @@ $paymentOptions.change(function() {
    Form Validation
 ***/
 
-function isValidName() {
+function isValidName($name) {
 
   if ( $name.val() === "" ) {
 
     $name.addClass('invalid');
-    $name.prev().addClass('invalid-text')
+    $name.prev().addClass('invalid-text');
     return false;
 
   }
@@ -185,20 +193,20 @@ function isValidName() {
   else {
 
     $name.removeClass('invalid');
-    $name.prev().removeClass('invalid-text')
+    $name.prev().removeClass('invalid-text');
     return true;
 
   }
 }
 
-function isValidEmail() {
+function isValidEmail($email) {
 
   const emailRegex = /^(^@.)+@(^@.)+\.(^@.)+$/;
 
   if ( emailRegex.test($email.val()) === false ) {
 
     $email.addClass('invalid');
-    $email.prev().addClass('invalid-text')
+    $email.prev().addClass('invalid-text');
     return false;
 
   }
@@ -213,7 +221,7 @@ function isValidEmail() {
 
 }
 
-function isValidActivity() {
+function isValidActivity($activityFieldset) {
 
   if ( $('input:checked').length === 0 ) {
 
@@ -232,14 +240,14 @@ function isValidActivity() {
 }
 
 
-function isValidCreditNumber() {
+function isValidCreditNumber($creditCardNum) {
 
   const creditCardRegex = /^(\d){13,16}$/;
 
   if ( creditCardRegex.test($creditCardNum.val()) === false ) {
 
     $creditCardNum.addClass('invalid');
-    $creditCardNum.prev().addClass('invalid-text')
+    $creditCardNum.prev().addClass('invalid-text');
     return false;
 
   }
@@ -247,21 +255,21 @@ function isValidCreditNumber() {
   else {
 
     $creditCardNum.removeClass('invalid');
-    $creditCardNum.prev().removeClass('invalid-text')
+    $creditCardNum.prev().removeClass('invalid-text');
     return true;
 
   }
 
 }
 
-function isValidCreditZip() {
+function isValidCreditZip($creditCardZip) {
 
   const creditZipRegex = /^(\d){5}$/;
 
-  if ( creditZipRegex.test($creditCardZip.val()) === false ) {
+  if ( creditZipRegex.test($creditCardNum.val()) === false ) {
 
     $creditCardZip.addClass('invalid');
-    $creditCardZip.prev().addClass('invalid-text')
+    $creditCardZip.prev().addClass('invalid-text');
     return false;
 
   }
@@ -269,29 +277,29 @@ function isValidCreditZip() {
   else {
 
     $creditCardZip.removeClass('invalid');
-    $creditCardZip.prev().removeClass('invalid-text')
+    $creditCardZip.prev().removeClass('invalid-text');
     return true;
 
   }
 
 }
 
-function isValidCreditCVV() {
+function isValidCreditCVV($creditCardCCV) {
 
-  const creditCVVRegex = /^(\d){3}$/;
+  const creditCCVRegex = /^(\d){3}$/;
 
-  if ( creditCVVRegex.test($creditCardCVV.val()) === false ) {
+  if ( creditCCVRegex.test($creditCardNum.val()) === false ) {
 
-    $creditCardCVV.addClass('invalid');
-    $creditCardCVV.prev().addClass('invalid-text')
+    $creditCardCCV.addClass('invalid');
+    $creditCardCCV.prev().addClass('invalid-text');
     return false;
 
   }
 
   else {
 
-    $creditCardCVV.removeClass('invalid');
-    $creditCardCVV.prev().removeClass('invalid-text')
+    $creditCardCCV.removeClass('invalid');
+    $creditCardCCV.prev().removeClass('invalid-text');
     return true;
 
   }
@@ -306,14 +314,14 @@ $('button').click(function(e) {
     if ( isValidName() || isValidEmail() || isValidActivity() ||
     isValidCreditNumber() || isValidCreditZip() || isValidCreditCVV() ) {
 
-      $('form').submit();
-      alert('Thank you for registering!');
+      e.preventDefault();
 
     }
 
     else {
 
-      e.preventDefault();
+      $('form').submit();
+      alert('Thank you for registering!');
 
     }
 
@@ -323,14 +331,14 @@ $('button').click(function(e) {
 
     if ( isValidName() || isValidEmail() || isValidActivity() ) {
 
-      $('form').submit();
-      alert('Thank you for registering!');
+      e.preventDefault();
 
     }
 
     else {
 
-      e.preventDefault();
+      $('form').submit();
+      alert('Thank you for registering!');
 
     }
 
@@ -339,4 +347,4 @@ $('button').click(function(e) {
 });
 
 
-})
+});
