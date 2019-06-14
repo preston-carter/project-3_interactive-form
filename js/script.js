@@ -20,17 +20,10 @@ const $shirtDesign = $('#design');
 const $shirtColors = $('#color');
 const $activityFieldset = $('.activities');
 const $allCheckboxes = $(':checkbox');
-const $activityMain = $('all:checkbox');
-const $activityFrameworks = $('js-frameworks:checkbox');
-const $activityLibs = $('js-libs:checkbox');
-const $activityExpress = $('express:checkbox');
-const $activityNode = $('node:checkbox');
-const $activityBuild = $('buildtools:checkbox');
-const $activityNPM = $('npm:checkbox');
 const $paymentOptions = $('#payment');
 const $creditCardNum = $('#cc-num');
 const $creditCardZip = $('#zip');
-const $creditCardCCV = $('#ccv');
+const $creditCardCVV = $('#cvv');
 
 let activityTotal = $('<div></div>');
 $activityFieldset.append(activityTotal);
@@ -180,7 +173,7 @@ $paymentOptions.change(function() {
    Form Validation
 ***/
 
-function isValidName($name) {
+function isValidName() {
 
   if ( $name.val() === "" ) {
 
@@ -199,9 +192,9 @@ function isValidName($name) {
   }
 }
 
-function isValidEmail($email) {
+function isValidEmail() {
 
-  const emailRegex = /^(^@.)+@(^@.)+\.(^@.)+$/;
+  const emailRegex = /^[^@.]+@[^@.]+\.[^@.]+$/i;
 
   if ( emailRegex.test($email.val()) === false ) {
 
@@ -221,7 +214,7 @@ function isValidEmail($email) {
 
 }
 
-function isValidActivity($activityFieldset) {
+function isValidActivity() {
 
   if ( $('input:checked').length === 0 ) {
 
@@ -240,7 +233,7 @@ function isValidActivity($activityFieldset) {
 }
 
 
-function isValidCreditNumber($creditCardNum) {
+function isValidCreditNumber() {
 
   const creditCardRegex = /^(\d){13,16}$/;
 
@@ -262,11 +255,11 @@ function isValidCreditNumber($creditCardNum) {
 
 }
 
-function isValidCreditZip($creditCardZip) {
+function isValidCreditZip() {
 
   const creditZipRegex = /^(\d){5}$/;
 
-  if ( creditZipRegex.test($creditCardNum.val()) === false ) {
+  if ( creditZipRegex.test($creditCardZip.val()) === false ) {
 
     $creditCardZip.addClass('invalid');
     $creditCardZip.prev().addClass('invalid-text');
@@ -284,22 +277,22 @@ function isValidCreditZip($creditCardZip) {
 
 }
 
-function isValidCreditCVV($creditCardCCV) {
+function isValidCreditCVV() {
 
-  const creditCCVRegex = /^(\d){3}$/;
+  const creditCVVRegex = /^(\d){3}$/;
 
-  if ( creditCCVRegex.test($creditCardNum.val()) === false ) {
+  if ( creditCVVRegex.test($creditCardCVV.val()) === false ) {
 
-    $creditCardCCV.addClass('invalid');
-    $creditCardCCV.prev().addClass('invalid-text');
+    $creditCardCVV.addClass('invalid');
+    $creditCardCVV.prev().addClass('invalid-text');
     return false;
 
   }
 
   else {
 
-    $creditCardCCV.removeClass('invalid');
-    $creditCardCCV.prev().removeClass('invalid-text');
+    $creditCardCVV.removeClass('invalid');
+    $creditCardCVV.prev().removeClass('invalid-text');
     return true;
 
   }
@@ -308,20 +301,27 @@ function isValidCreditCVV($creditCardCCV) {
 
 $('button').click(function(e) {
 
+isValidName();
+isValidEmail();
+isValidActivity();
+isValidCreditNumber();
+isValidCreditZip();
+isValidCreditCVV();
+
   if ( $paymentOptions.val() === "credit card" ||
     $paymentOptions.val() === "select_method") {
 
-    if ( isValidName() || isValidEmail() || isValidActivity() ||
-    isValidCreditNumber() || isValidCreditZip() || isValidCreditCVV() ) {
+    if ( isValidName() && isValidEmail() && isValidActivity() &&
+    isValidCreditNumber() && isValidCreditZip() && isValidCreditCVV() ) {
 
-      e.preventDefault();
+      $('form').submit();
+      alert('Thank you for registering!');
 
     }
 
     else {
 
-      $('form').submit();
-      alert('Thank you for registering!');
+      e.preventDefault();
 
     }
 
@@ -329,16 +329,16 @@ $('button').click(function(e) {
 
   else {
 
-    if ( isValidName() || isValidEmail() || isValidActivity() ) {
+    if ( isValidName() && isValidEmail() && isValidActivity() ) {
 
-      e.preventDefault();
+      $('form').submit();
+      alert('Thank you for registering!');
 
     }
 
     else {
 
-      $('form').submit();
-      alert('Thank you for registering!');
+      e.preventDefault();
 
     }
 
@@ -346,5 +346,4 @@ $('button').click(function(e) {
 
 });
 
-
-});
+})
