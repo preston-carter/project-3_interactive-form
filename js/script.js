@@ -6,31 +6,42 @@ https://github.com/preston-carter
 ******************************************/
 
 //Wait to run the script until the content has fully loaded.
-document.addEventListener('DOMContentLoaded', () => {
+$(function() {
 
 /***
    Global variables that store the DOM elements to reference and/or manipulate.
 ***/
+
 const $name = $('#name');
 const $email = $('#mail');
 const $jobRoleFieldset = $('#firstSet');
 const $jobRole = $('#title');
 const $jobRoleOther = $('#other-title');
 const $shirtDesign = $('#design');
+const $designOptionSelect = $('#design option:eq(0)');
 const $shirtColors = $('#color');
+const $firstJSPunsColor = $('#color option:eq(0)');
+const $allJSPunsColors = $('#color option:contains("JS Puns")');
+const $allIHeartJSColors = $('#color option:contains("JS shirt")');
+const $firstIHeartJSColor = $('#color option:eq(3)');
 const $activityFieldset = $('.activities');
 const $allCheckboxes = $(':checkbox');
 const $paymentOptions = $('#payment');
+const $creditPayment = $paymentOptions.next();
+const $paypalPayment = $paymentOptions.next().next();
+const $bitcoinPayment = $paymentOptions.next().next().next();
+const $creditCard = $('#credit-card');
 const $creditCardNum = $('#cc-num');
 const $creditCardZip = $('#zip');
 const $creditCardCVV = $('#cvv');
 
+//Update-able variables to store the total activity cost upon user selection.
 let activityTotal = $('<div></div>');
 $activityFieldset.append(activityTotal);
 let activityCost = 0;
 
 /***
-   Prepring form for initial load.
+   Preparing form for initial load.
 ***/
 
 //Hide other job option and focus on the name field.
@@ -41,12 +52,18 @@ $name.focus();
    Job Role Section
 ***/
 
-//Create function to show job option field if selected.
+//Create function to show job option field if selected and hide otherwise.
 $jobRole.change(function() {
 
   if ( $(this).val() === "other" ) {
 
     $jobRoleOther.show();
+
+  }
+
+  else {
+
+    $jobRoleOther.hide();
 
   }
 
@@ -56,23 +73,25 @@ $jobRole.change(function() {
    T Shirt Section
 ***/
 
-$('#design option:eq(0)').attr('hidden', true);
+//Make the 'Select Theme' option unselectable.
+$designOptionSelect.attr('hidden', true);
 
+//Once user selects design choice, only show the associated design colors.
 $shirtDesign.change(function() {
 
   if ( $(this).val() === "js puns" ) {
 
-    $('#color option:eq(0)').prop('selected', true);
-    $('#color option:contains("JS shirt")').hide();
-    $('#color option:contains("JS Puns")').show();
+    $firstJSPunsColor.prop('selected', true);
+    $allIHeartJSColors.hide();
+    $allJSPunsColors.show();
 
   }
 
   else if ( $(this).val() === "heart js" ) {
 
-    $('#color option:eq(3)').prop('selected', true);
-    $('#color option:contains("JS Puns")').hide();
-    $('#color option:contains("JS shirt")').show();
+    $firstIHeartJSColor.prop('selected', true);
+    $allJSPunsColors.hide();
+    $allIHeartJSColors.show();
 
   }
 
@@ -82,8 +101,10 @@ $shirtDesign.change(function() {
    Activity Section
 ***/
 
+//Watch the acticity section and update the total activity cost when a checkbox is selected/unselected.
 $activityFieldset.change( function(e) {
 
+  //Create vars to extract activity values for each activity.
   let checkboxTarget = $(e.target);
   let checkboxParent = checkboxTarget.parent().text();
   let symbolIndex = checkboxParent.indexOf('$') + 1;
@@ -93,6 +114,7 @@ $activityFieldset.change( function(e) {
   let commaIndex = checkboxParent.indexOf(',');
   let dayTime = checkboxParent.slice(emDashIndex, commaIndex);
 
+  //Use these vars to update the cost as an activity is selected or unselected.
   if ( checkboxTarget.prop('checked') ) {
 
     activityCost += costVar;
@@ -103,16 +125,20 @@ $activityFieldset.change( function(e) {
 
   }
 
+  //Store updating cost in a span element with a Total:$ format.
   activityTotal.html('<span>Total: $' + activityCost + '</span>');
 
+  //Loop through all checkboxes to determine any conflicting time slots.
   for ( let i = 0; i < $allCheckboxes.length; i += 1 ) {
 
+    //Create vars to extract date/time values for each activity.
     let checkboxLoop = $($allCheckboxes[i]);
     let checkboxParentLoop = checkboxLoop.parent().text();
     let emDashIndexLoop = checkboxParentLoop.indexOf('—') + 2;
     let commaIndexLoop = checkboxParentLoop.indexOf(',');
     let dayTimeLoop = checkboxParentLoop.slice(emDashIndexLoop, commaIndexLoop);
 
+    //Use these vars to prevent user from selecting overlapping activities.
     if ( dayTime === dayTimeLoop && checkboxParent !== checkboxParentLoop ) {
 
       if ( checkboxTarget.prop('checked') ) {
@@ -134,36 +160,37 @@ $activityFieldset.change( function(e) {
    Payment Section
 ***/
 
+//Initially hide the paypal/bitcoin info sections + prevent selection of the 'Select method' option.
 $('#payment option:eq(0)').attr('hidden', true);
-$paymentOptions.next().next().hide();
-$paymentOptions.next().next().next().hide();
+$paypalPayment.hide();
+$bitcoinPayment.hide();
 
 $paymentOptions.change(function() {
 
   if ( $(this).val() === "credit card" ) {
 
-    $('#payment option:eq(1)').prop('selected', true);
-    $('#credit-card').attr('hidden', false);
-    $paymentOptions.next().next().hide();
-    $paymentOptions.next().next().next().hide();
+    $creditPayment.prop('selected', true);
+    $creditCard.attr('hidden', false);
+    $paypalPayment.hide();
+    $bitcoinPayment.hide();
 
   }
 
   else if ( $(this).val() === "paypal" ) {
 
-    $('#payment option:eq(2)').prop('selected', true);
-    $('#credit-card').attr('hidden', true);
-    $paymentOptions.next().next().show();
-    $paymentOptions.next().next().next().hide();
+    $paypalPayment.prop('selected', true);
+    $creditCard.attr('hidden', true);
+    $paypalPayment.show();
+    $bitcoinPayment.hide();
 
   }
 
   else if ( $(this).val() === "bitcoin" ) {
 
-    $('#payment option:eq(3)').prop('selected', true);
-    $('#credit-card').attr('hidden', true);
-    $paymentOptions.next().next().hide();
-    $paymentOptions.next().next().next().show();
+    $bitcoinPayment.prop('selected', true);
+    $creditCard.attr('hidden', true);
+    $paypalPayment.hide();
+    $bitcoinPayment.show();
 
   }
 
@@ -173,6 +200,7 @@ $paymentOptions.change(function() {
    Form Validation
 ***/
 
+//Create validation functions for each user-input form field
 function isValidName() {
 
   if ( $name.val() === "" ) {
@@ -299,8 +327,14 @@ function isValidCreditCVV() {
 
 }
 
+/***
+   Form Submission
+***/
+
+//Create function to run form validations and check the appropriate ones depending on payment method.
 $('button').click(function(e) {
 
+//Run validations
 isValidName();
 isValidEmail();
 isValidActivity();
@@ -308,6 +342,7 @@ isValidCreditNumber();
 isValidCreditZip();
 isValidCreditCVV();
 
+  //Check all validations when credit is the payment method.
   if ( $paymentOptions.val() === "credit card" ||
     $paymentOptions.val() === "select_method") {
 
@@ -327,6 +362,7 @@ isValidCreditCVV();
 
   }
 
+  //Check all non-credit validations when credit is NOT the payment method.
   else {
 
     if ( isValidName() && isValidEmail() && isValidActivity() ) {
@@ -346,4 +382,4 @@ isValidCreditCVV();
 
 });
 
-})
+});
