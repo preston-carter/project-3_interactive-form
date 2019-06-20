@@ -44,13 +44,6 @@ const emailRegex = /^[^@.]+@[^@.]+\.[^@.]+$/i;
 const creditCardRegex = /^(\d){13,16}$/;
 const creditZipRegex = /^(\d){5}$/;
 const creditCVVRegex = /^(\d){3}$/;
-//Store validation function calls for each field/part of form.
-const isValidName = isValid( nameRegex, $name );
-const isValidEmail = isValid( emailRegex, $email );
-const isValidAct = isValidActivity();
-const isValidCreditNumber = isValid( creditCardRegex, $creditCardNum );
-const isValidCreditZip = isValid( creditZipRegex, $creditCardZip );
-const isValidCreditCVV = isValid( creditCVVRegex, $creditCardCVV );
 
 /***
    Preparing form for initial load.
@@ -260,6 +253,14 @@ function isValidActivity() {
 
 //Create function to run form validations and check the appropriate ones depending on payment method.
 $('button').click(function(e) {
+
+  //Store validation function calls for each field/part of form.
+  const isValidName = isValid( nameRegex, $name );
+  const isValidEmail = isValid( emailRegex, $email );
+  const isValidAct = isValidActivity();
+  const isValidCreditNumber = isValid( creditCardRegex, $creditCardNum );
+  const isValidCreditZip = isValid( creditZipRegex, $creditCardZip );
+  const isValidCreditCVV = isValid( creditCVVRegex, $creditCardCVV );
 
   //Check all validations when credit is the payment method.
   if ( $paymentOptions.val() === "credit card" ||
