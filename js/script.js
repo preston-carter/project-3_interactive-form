@@ -34,11 +34,23 @@ const $creditCard = $('#credit-card');
 const $creditCardNum = $('#cc-num');
 const $creditCardZip = $('#zip');
 const $creditCardCVV = $('#cvv');
-
 //Update-able variables to store the total activity cost upon user selection.
 let activityTotal = $('<div></div>');
 $activityFieldset.append(activityTotal);
 let activityCost = 0;
+//Regex variables to check field validation.
+const nameRegex = /^\S+$/;
+const emailRegex = /^[^@.]+@[^@.]+\.[^@.]+$/i;
+const creditCardRegex = /^(\d){13,16}$/;
+const creditZipRegex = /^(\d){5}$/;
+const creditCVVRegex = /^(\d){3}$/;
+//Store validation function calls for each field/part of form.
+const isValidName = isValid( nameRegex, $name );
+const isValidEmail = isValid( emailRegex, $email );
+const isValidAct = isValidActivity();
+const isValidCreditNumber = isValid( creditCardRegex, $creditCardNum );
+const isValidCreditZip = isValid( creditZipRegex, $creditCardZip );
+const isValidCreditCVV = isValid( creditCVVRegex, $creditCardCVV );
 
 /***
    Preparing form for initial load.
@@ -201,131 +213,46 @@ $paymentOptions.change(function() {
 ***/
 
 //Create validation functions for each user-input form field
-function isValidName() {
 
-  if ( $name.val() === "" ) {
+//The user input fields can be check with a single function by reading in the regex var + input field.
+function isValid(regex, field) {
 
-    $name.addClass('invalid');
-    $name.prev().addClass('invalid-text');
+  if ( regex.test(field.val()) === false ) {
+
+    field.addClass('invalid');
+    field.prev().addClass('invalid-text');
     return false;
 
   }
 
   else {
 
-    $name.removeClass('invalid');
-    $name.prev().removeClass('invalid-text');
-    return true;
-
-  }
-}
-
-function isValidEmail() {
-
-  const emailRegex = /^[^@.]+@[^@.]+\.[^@.]+$/i;
-
-  if ( emailRegex.test($email.val()) === false ) {
-
-    $email.addClass('invalid');
-    $email.prev().addClass('invalid-text');
-    return false;
-
-  }
-
-  else {
-
-    $email.removeClass('invalid');
-    $email.prev().removeClass('invalid-text')
+    field.removeClass('invalid');
+    field.prev().removeClass('invalid-text');
     return true;
 
   }
 
 }
 
+//The activity section needs to be checked separately because there's no character input to check from the user.
 function isValidActivity() {
 
-  if ( $('input:checked').length === 0 ) {
+    if ( $('input:checked').length === 0 ) {
 
-    $activityFieldset.addClass('invalid-text');
-    return false;
+      $activityFieldset.addClass('invalid-text');
+      return false;
 
-  }
+    }
 
-  else {
+    else {
 
-    $activityFieldset.removeClass('invalid-text');
-    return true;
+      $activityFieldset.removeClass('invalid-text');
+      return true;
 
-  }
-
-}
-
-
-function isValidCreditNumber() {
-
-  const creditCardRegex = /^(\d){13,16}$/;
-
-  if ( creditCardRegex.test($creditCardNum.val()) === false ) {
-
-    $creditCardNum.addClass('invalid');
-    $creditCardNum.prev().addClass('invalid-text');
-    return false;
+    }
 
   }
-
-  else {
-
-    $creditCardNum.removeClass('invalid');
-    $creditCardNum.prev().removeClass('invalid-text');
-    return true;
-
-  }
-
-}
-
-function isValidCreditZip() {
-
-  const creditZipRegex = /^(\d){5}$/;
-
-  if ( creditZipRegex.test($creditCardZip.val()) === false ) {
-
-    $creditCardZip.addClass('invalid');
-    $creditCardZip.prev().addClass('invalid-text');
-    return false;
-
-  }
-
-  else {
-
-    $creditCardZip.removeClass('invalid');
-    $creditCardZip.prev().removeClass('invalid-text');
-    return true;
-
-  }
-
-}
-
-function isValidCreditCVV() {
-
-  const creditCVVRegex = /^(\d){3}$/;
-
-  if ( creditCVVRegex.test($creditCardCVV.val()) === false ) {
-
-    $creditCardCVV.addClass('invalid');
-    $creditCardCVV.prev().addClass('invalid-text');
-    return false;
-
-  }
-
-  else {
-
-    $creditCardCVV.removeClass('invalid');
-    $creditCardCVV.prev().removeClass('invalid-text');
-    return true;
-
-  }
-
-}
 
 /***
    Form Submission
@@ -334,20 +261,12 @@ function isValidCreditCVV() {
 //Create function to run form validations and check the appropriate ones depending on payment method.
 $('button').click(function(e) {
 
-//Run validations
-isValidName();
-isValidEmail();
-isValidActivity();
-isValidCreditNumber();
-isValidCreditZip();
-isValidCreditCVV();
-
   //Check all validations when credit is the payment method.
   if ( $paymentOptions.val() === "credit card" ||
     $paymentOptions.val() === "select_method") {
 
-    if ( isValidName() && isValidEmail() && isValidActivity() &&
-    isValidCreditNumber() && isValidCreditZip() && isValidCreditCVV() ) {
+    if ( isValidName && isValidEmail && isValidAct &&
+    isValidCreditNumber && isValidCreditZip && isValidCreditCVV ) {
 
       $('form').submit();
       alert('Thank you for registering!');
@@ -365,7 +284,7 @@ isValidCreditCVV();
   //Check all non-credit validations when credit is NOT the payment method.
   else {
 
-    if ( isValidName() && isValidEmail() && isValidActivity() ) {
+    if ( isValidName && isValidEmail && isValidAct ) {
 
       $('form').submit();
       alert('Thank you for registering!');
