@@ -20,6 +20,7 @@ const $jobRoleOther = $('#other-title');
 const $shirtDesign = $('#design');
 const $designOptionSelect = $('#design option:eq(0)');
 const $shirtColors = $('#color');
+const $shirtColorsLabel = $shirtColors.prev();
 const $firstJSPunsColor = $('#color option:eq(0)');
 const $allJSPunsColors = $('#color option:contains("JS Puns")');
 const $allIHeartJSColors = $('#color option:contains("JS shirt")');
@@ -51,6 +52,8 @@ const creditCVVRegex = /^(\d){3}$/;
 
 //Hide other job option and focus on the name field.
 $jobRoleOther.hide();
+$shirtColors.hide();
+$shirtColorsLabel.text('Please select a T-shirt theme!').addClass('invalid-text');
 $name.focus();
 
 /***
@@ -84,19 +87,22 @@ $designOptionSelect.attr('hidden', true);
 //Once user selects design choice, only show the associated design colors.
 $shirtDesign.change(function() {
 
+  $shirtColors.show();
+  $shirtColorsLabel.text('Color:').removeClass('invalid-text');
+
   if ( $(this).val() === "js puns" ) {
 
-    $firstJSPunsColor.prop('selected', true);
     $allIHeartJSColors.hide();
     $allJSPunsColors.show();
+    $firstJSPunsColor.prop('selected', true);
 
   }
 
   else if ( $(this).val() === "heart js" ) {
 
-    $firstIHeartJSColor.prop('selected', true);
     $allJSPunsColors.hide();
     $allIHeartJSColors.show();
+    $firstIHeartJSColor.prop('selected', true);
 
   }
 
